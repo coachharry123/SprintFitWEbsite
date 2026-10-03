@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SprintFIT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a running-track page. Hairline lane lines run behind the hero, the three coaching lanes open as dropdowns, the rest is a plain single-column read. */
+:root {
+  --bg: #EDF1F4;
+  --surface: #FFFFFF;
+  --ink: #0F2233;
+  --muted: #4F6273;
+  --line: #CBD5DD;
+  --accent: #1D4ED8;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #DCE6FB;
+  --font-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B1620; --surface: #122230; --ink: #E8EEF3; --muted: #9FB1C0; --line: #263A4C;
+    --accent: #7A9CFF; --accent-ink: #0B1620; --accent-soft: #1B2F52; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B1620; --surface: #122230; --ink: #E8EEF3; --muted: #9FB1C0; --line: #263A4C;
+  --accent: #7A9CFF; --accent-ink: #0B1620; --accent-soft: #1B2F52; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  padding-inline: 20px; margin: 0;
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+a { color: inherit; }
+.wrap { max-width: 1080px; margin-inline: auto; }
+h1, h2, h3 { font-family: var(--font-display); text-transform: uppercase; line-height: 0.95; letter-spacing: 0.01em; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(2.2rem, 6vw, 3.4rem); font-weight: 800; }
+h3 { font-size: 1.7rem; font-weight: 800; }
+p { margin: 0; }
+.label { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* header */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); margin-inline: -20px; padding-inline: 20px; }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.brand { font-family: var(--font-display); font-weight: 900; font-size: 1.7rem; letter-spacing: 0.02em; text-decoration: none; text-transform: uppercase; }
+.brand b { color: var(--accent); font-weight: 900; }
+.nav { display: flex; align-items: center; gap: 22px; }
+.nav a { font-size: 0.9rem; text-decoration: none; color: var(--muted); font-weight: 500; }
+.nav a:hover { color: var(--ink); }
+@media (max-width: 760px) { .nav .hide-sm { display: none; } }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font-body); font-weight: 600; font-size: 0.95rem; padding: 12px 20px; border: 2px solid var(--accent); background: var(--accent); color: var(--accent-ink); text-decoration: none; border-radius: 4px; cursor: pointer; }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
+.btn.ghost:hover { background: var(--ink); color: var(--bg); filter: none; }
+.nav .btn { padding: 8px 14px; font-size: 0.85rem; color: var(--accent-ink); }
+
+/* hero */
+.hero { padding-block: 64px 56px; position: relative; }
+.hero::before {
+  content: ""; position: absolute; inset: 0 -20px; z-index: -1;
+  background: repeating-linear-gradient(to bottom, transparent 0 63px, var(--line) 63px 64px);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+}
+.hero h1 { font-size: clamp(3.6rem, 15vw, 9rem); font-weight: 900; max-width: 11ch; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero p.lead { max-width: 52ch; font-size: 1.15rem; margin-top: 24px; color: var(--ink); }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.jump { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; margin-top: 32px; }
+.jump a { position: relative; display: grid; gap: 6px; padding: 18px 52px 18px 20px; text-decoration: none; border: 2px solid var(--accent); border-radius: 4px; min-width: 0; align-content: start; }
+.jump a strong { font-family: var(--font-display); text-transform: uppercase; font-weight: 800; font-size: 1.5rem; line-height: 1.02; letter-spacing: 0.01em; text-wrap: balance; }
+.jump a i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-style: normal; font-size: 1.6rem; }
+.jump .j1 { background: var(--accent); color: var(--accent-ink); }
+.jump .j1 .label { color: var(--accent-ink); opacity: 0.85; }
+.jump .j2, .jump .j3 { background: var(--surface); color: var(--ink); }
+.jump .j2 .label, .jump .j3 .label { color: var(--accent); }
+.jump a:hover { filter: brightness(1.06); }
+.meta { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 8px 28px; }
+
+section { padding-block: 72px; border-top: 1px solid var(--line); }
+.head { display: grid; gap: 14px; margin-bottom: 40px; }
+.head p { max-width: 60ch; color: var(--muted); }
+
+/* lanes: dropdowns */
+.lanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; align-items: start; }
+.lane { background: var(--surface); border: 1px solid var(--line); min-width: 0; scroll-margin-top: 80px; }
+.lane[open] { border-color: var(--accent); }
+.lane summary { list-style: none; cursor: pointer; display: grid; gap: 6px; padding: 26px 64px 26px 26px; position: relative; }
+.lane summary::-webkit-details-marker { display: none; }
+.lane summary::after { content: "+"; position: absolute; right: 22px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; display: grid; place-items: center; border: 2px solid var(--accent); border-radius: 50%; color: var(--accent); font-family: var(--font-mono); font-size: 1.2rem; line-height: 1; }
+.lane[open] summary::after { content: "\2212"; background: var(--accent); color: var(--accent-ink); }
+.lane .label { color: var(--accent); }
+.lane .sub { color: var(--ink); font-size: 1rem; }
+.lane .body { padding: 0 26px 26px; display: grid; gap: 18px; border-top: 1px solid var(--line); padding-top: 20px; }
+.lane ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.lane li { padding-left: 22px; position: relative; color: var(--muted); }
+.lane li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 12px; height: 2px; background: var(--accent); }
+.lane .btn { justify-self: start; }
+
+/* diet strip */
+.diet { margin-top: 20px; background: var(--surface); border: 1px solid var(--line); padding: 20px 26px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.diet .txt { display: grid; gap: 4px; min-width: 0; }
+.diet .label { color: var(--accent); }
+.diet h3 { font-size: 1.45rem; }
+.diet .sub { color: var(--muted); font-size: 0.98rem; }
+
+.notes { margin-top: 28px; display: grid; gap: 8px; max-width: 70ch; color: var(--muted); font-size: 0.95rem; }
+.notes strong { color: var(--ink); font-weight: 600; }
+
+/* blocks and trials */
+.sub-head { display: grid; gap: 6px; margin-bottom: 18px; }
+.trials { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; margin-bottom: 52px; }
+.trial { background: var(--surface); border: 2px solid var(--accent); padding: 26px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.trial .label { color: var(--accent); }
+.trial .price { font-family: var(--font-display); font-weight: 900; font-size: 4rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.trial p { color: var(--muted); }
+.trial .btn { justify-self: start; margin-top: 6px; }
+.pk { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 16px; }
+.pack { background: var(--surface); border: 1px solid var(--line); padding: 22px; display: grid; gap: 10px; min-width: 0; }
+.pack .n { font-family: var(--font-display); font-weight: 900; font-size: 3.4rem; line-height: 1; }
+.pack .n small { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; margin-left: 6px; color: var(--muted); }
+.pack .why { font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+/* about */
+.about { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; }
+@media (min-width: 860px) { .about { grid-template-columns: 5fr 7fr; gap: 56px; } }
+.portrait { aspect-ratio: 4 / 5; max-width: 100%; background: var(--accent-soft); border: 1px dashed var(--accent); display: grid; place-items: center; text-align: center; padding: 24px; color: var(--muted); font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.about .copy { display: grid; gap: 18px; align-content: start; max-width: 62ch; }
+.about .copy p.txt { color: var(--muted); }
+.about .copy p.lede { color: var(--ink); font-size: 1.12rem; }
+.quals { display: grid; gap: 12px; margin-top: 8px; border-top: 1px solid var(--line); padding-top: 18px; }
+.quals ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px 20px; }
+.quals li { font-weight: 600; padding-left: 22px; position: relative; }
+.quals li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 12px; height: 2px; background: var(--accent); }
+
+/* testimonials */
+.quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+.quote { background: var(--surface); border: 1px dashed var(--line); padding: 26px; display: grid; gap: 18px; align-content: start; min-width: 0; }
+.quote blockquote { margin: 0; font-size: 1.1rem; color: var(--muted); }
+.quote cite { font-style: normal; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tag { justify-self: start; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--accent); color: var(--accent); }
+
+/* book */
+.book { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+.card { background: var(--surface); border: 1px solid var(--line); padding: 30px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.card.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.card.primary .label, .card.primary p { color: var(--accent-ink); }
+.card.primary .btn { background: var(--accent-ink); color: var(--accent); border-color: var(--accent-ink); }
+.card p { color: var(--muted); }
+.card .btn { justify-self: start; }
+
+.paper { margin-top: 28px; }
+.paper ul { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 12px; }
+.paper li a { display: grid; gap: 4px; padding: 16px 18px; background: var(--surface); border: 1px solid var(--line); text-decoration: none; height: 100%; }
+.paper li a:hover { border-color: var(--accent); }
+.paper li strong { font-weight: 600; }
+.paper li span { color: var(--muted); font-size: 0.9rem; }
+
+footer { border-top: 1px solid var(--line); padding-block: 36px 48px; color: var(--muted); font-size: 0.9rem; display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; }
+
+/* embeds (self-hosted version) */
+.embeds { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; align-items: start; }
+.embed { background: var(--surface); border: 1px solid var(--line); padding: 26px; display: grid; gap: 14px; min-width: 0; }
+.embed .muted { color: var(--muted); }
+.embed iframe { width: 100%; border: 0; min-width: 0; background: var(--surface); }
+.embed iframe.cal { height: 720px; }
+.embed iframe.form { height: 640px; }
+.card { margin-top: 20px; }
+button.btn { font-family: var(--font-body); }
+.map { width: 100%; height: 420px; border: 1px solid var(--line); background: var(--surface); display: block; }
+dialog.modal { width: min(94vw, 720px); height: min(90vh, 780px); padding: 0; border: 2px solid var(--accent); background: var(--surface); color: var(--ink); }
+dialog.modal[open] { display: flex; flex-direction: column; }
+dialog.modal::backdrop { background: rgba(8, 20, 32, 0.6); }
+.modal-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); flex: none; }
+.modal-bar a { font-size: 0.85rem; }
+.modal-bar .btn { padding: 6px 14px; font-size: 0.85rem; }
+dialog.modal iframe { flex: 1; width: 100%; border: 0; min-height: 0; background: var(--surface); }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">Sprint<b>FIT</b></a>
+    <nav class="nav" aria-label="Main">
+      <a class="hide-sm" href="#services">Services</a>
+      <a class="hide-sm" href="#blocks">Blocks</a>
+      <a class="hide-sm" href="#about">About</a>
+      <a class="hide-sm" href="#results">Testimonials</a>
+      <a class="btn" href="#book">Book a trial</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+  <div class="hero">
+    <p class="label">Strength &amp; speed coaching &middot; outdoors, in person</p>
+    <h1 style="margin-top:18px">Get <em>stronger.</em> Move <em>faster.</em></h1>
+    <p class="lead">Professional Performance Coaching: be Fast, be Strong, be Athletic.</p>
+    <nav class="jump" aria-label="Choose your coaching">
+      <a class="j1" href="#athlete-lab"><span class="label">Jump to</span><strong>Athlete Lab - Sportsperson Coaching</strong><i aria-hidden="true">&darr;</i></a>
+      <a class="j2" href="#physical-development"><span class="label">Jump to</span><strong>Physical Development Coaching - For the everyday fitness seeker</strong><i aria-hidden="true">&darr;</i></a>
+      <a class="j3" href="#youth-development"><span class="label">Jump to</span><strong>Youth Development - Age appropriate athleticism</strong><i aria-hidden="true">&darr;</i></a>
+    </nav>
+    <div class="cta-row">
+      <a class="btn" href="#book">Book a trial session</a>
+      <a class="btn ghost" href="#book" data-modal="cal-interest">Express interest</a>
+    </div>
+    <div class="meta label">
+      <span>Sessions 45&ndash;60 min</span>
+      <span>Parks &amp; athletics track</span>
+      <span>Youth sessions 60 min</span>
+    </div>
+  </div>
+
+  <section id="services">
+    <div class="head">
+      <p class="label">What I coach</p>
+      <h2>Three lanes, one standard</h2>
+      <p>Open a lane to see what is inside. Every programme is written for the person in front of me.</p>
+    </div>
+    <div class="lanes">
+      <details class="lane" id="athlete-lab">
+        <summary>
+          <span class="label">Lane 1</span>
+          <h3>Athlete Lab</h3>
+          <span class="sub">Sportsperson Coaching</span>
+        </summary>
+        <div class="body">
+          <ul>
+            <li>Biomechanics Workshops</li>
+            <li>Acceleration &amp; Max Velocity</li>
+            <li>Strength Profiling</li>
+            <li>Programming for your Season's Calendar and Event Schedule</li>
+          </ul>
+          <a class="btn" href="#book" data-interest="Athlete Lab - Sportsperson Coaching">THIS IS ME!</a>
+        </div>
+      </details>
+      <details class="lane" id="physical-development">
+        <summary>
+          <span class="label">Lane 2</span>
+          <h3>Physical Development Coaching</h3>
+          <span class="sub">For the everyday fitness seeker</span>
+        </summary>
+        <div class="body">
+          <ul>
+            <li>Accountability Partnership - stress-less, work-more.</li>
+            <li>Goal Oriented Programming for Lifestyle needs &amp; wants</li>
+            <li>Occupational Injury Pathway</li>
+            <li>Lifting Workshops</li>
+          </ul>
+          <a class="btn" href="#book" data-interest="Physical Development Coaching">THIS IS ME!</a>
+        </div>
+      </details>
+      <details class="lane" id="youth-development">
+        <summary>
+          <span class="label">Lane 3</span>
+          <h3>Youth Development</h3>
+          <span class="sub">Age appropriate athleticism</span>
+        </summary>
+        <div class="body">
+          <ul>
+            <li>Movement Library Building</li>
+            <li>Framework &amp; Cognition Focus</li>
+            <li>General preparation for sporting development</li>
+          </ul>
+          <a class="btn" href="#book" data-interest="Youth Development">THIS IS ME!</a>
+        </div>
+      </details>
+    </div>
+    <div class="diet">
+      <div class="txt">
+        <span class="label">Nutrition</span>
+        <h3>Dietary needs analysis</h3>
+        <span class="sub">Revamp your meal schedule</span>
+      </div>
+      <a class="btn" href="#book" data-interest="Dietary needs analysis">THIS IS ME!</a>
+    </div>
+    <p class="notes" style="margin-top:24px">Online coaching is priced separately. Send an enquiry to ask.</p>
+  </section>
+
+  <section id="blocks">
+    <div class="head">
+      <p class="label">Ways to train with me</p>
+      <h2>Start with a trial, then choose a block</h2>
+      <p>Book a trial to see how we work together. When you are ready to commit, pick the block that matches what you want to achieve.</p>
+    </div>
+
+    <div class="trials">
+      <div class="trial">
+        <span class="label">Trial</span>
+        <h3>Trial session</h3>
+        <div class="price">&pound;70</div>
+        <p>One session to meet, assess and train.</p>
+        <a class="btn" href="#book">Book a trial session</a>
+      </div>
+      <div class="trial">
+        <span class="label">Trial block</span>
+        <h3>4 session trial</h3>
+        <div class="price">&pound;150</div>
+        <p>Four sessions to start building momentum. Sessions expire 2 weeks after your first one.</p>
+        <a class="btn" href="#book" data-interest="Trial block - 4 sessions">THIS IS ME!</a>
+      </div>
+    </div>
+
+    <div class="sub-head">
+      <p class="label">Block offering</p>
+      <h3>Choose your block</h3>
+    </div>
+    <div class="pk">
+      <div class="pack"><div class="n">4<small>sessions</small></div><div class="why">Basic intervention</div></div>
+      <div class="pack"><div class="n">8<small>sessions</small></div><div class="why">Detailed refinement</div></div>
+      <div class="pack"><div class="n">12<small>sessions</small></div><div class="why">Invested analysis</div></div>
+      <div class="pack"><div class="n">16<small>sessions</small></div><div class="why">Full-time training</div></div>
+    </div>
+    <div class="notes">
+      <p><strong>Block pricing.</strong> Ask about block pricing when you enquire.</p>
+      <p><strong>Training with a partner.</strong> Ask about the partner offer when you enquire.</p>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="about">
+      <div class="portrait" role="img" aria-label="Space for a coaching photo">Your coaching photo goes here</div>
+      <div class="copy">
+        <p class="label">About me</p>
+        <h2>Hi, I'm Harry.</h2>
+        <p class="txt lede">I spent over a decade in Track &amp; Field. From being an athlete, being an official, and full circle to be a coach.</p>
+        <p class="txt">Iggy Johnson once told us "As a courtesy to the next, please leave this place better than you found it." Now I live by that. If you want to be athletic, I know what it takes. If you want to be an athlete, I know what it takes. You will leave each session better than you started. Play the long game.</p>
+        <p class="txt">Based in Richmond-Upon-Thames, I have provisions spanning the SW of London and Surrey. We can work together in your local area, but my skills are not limited to in-person coaching!</p>
+        <div class="quals">
+          <span class="label">Qualifications</span>
+          <ul>
+            <li>BSc Sports Kinesiology</li>
+            <li>MSc Strength &amp; Conditioning</li>
+            <li>UKA Licensed</li>
+            <li>EA Registered</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="head">
+      <p class="label">Testimonials</p>
+      <h2>What clients say</h2>
+      <p>These slots are waiting for your first real client quotes. Replace the text below once you have permission to share them.</p>
+    </div>
+    <div class="quotes">
+      <figure class="quote" style="margin:0">
+        <span class="tag">Placeholder</span>
+        <blockquote>Add a short quote from an adult client here. Two sentences on what changed for them works best.</blockquote>
+        <cite>First name &middot; Strength client</cite>
+      </figure>
+      <figure class="quote" style="margin:0">
+        <span class="tag">Placeholder</span>
+        <blockquote>Add a quote from an athlete or a parent here, ideally mentioning speed, confidence or consistency.</blockquote>
+        <cite>First name &middot; Athlete or parent</cite>
+      </figure>
+    </div>
+  </section>
+
+  <section id="book">
+    <div class="head">
+      <p class="label">Start here</p>
+      <h2>Book or ask a question</h2>
+    </div>
+    <div class="embeds">
+      <div class="embed">
+        <p class="label">Book</p>
+        <h3>Trial session</h3>
+        <p class="muted">Pick a time that suits you. You will get a confirmation by email.</p>
+        <iframe class="cal" src="https://cal.com/harry-north-rtqldh/sprintfit-trial-session?embed=true&amp;layout=month_view" title="Book a SprintFIT trial session" loading="lazy"></iframe>
+      </div>
+      <div class="embed">
+        <p class="label">Enquire</p>
+        <h3>Work with me</h3>
+        <p class="muted">Not sure which lane or block fits? Tell me your goals and I will reply with a plan.</p>
+        <iframe class="form" src="https://tally.so/r/kdo5Pj?transparentBackground=1" title="Work with me enquiry form" loading="lazy"></iframe>
+      </div>
+    </div>
+    <div class="card">
+      <p class="label">Interested</p>
+      <h3>Expression of interest</h3>
+      <p>Not ready to book yet? Register your interest and I will get in touch.</p>
+      <button class="btn" type="button" data-modal="cal-interest">Express interest</button>
+    </div>
+    <div class="paper">
+      <p class="label">For booked clients, before your first session</p>
+      <ul>
+        <li><a href="#book" data-link="parq"><strong>Health questionnaire (PAR-Q)</strong><span>Quick readiness check for exercise.</span></a></li>
+        <li><a href="#book" data-link="discovery"><strong>Client discovery questionnaire</strong><span>Your goals, history and preferences.</span></a></li>
+        <li><a href="#book" data-link="consent"><strong>Photo &amp; video consent</strong><span>Only if you are happy to be filmed for coaching feedback.</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="find">
+    <div class="head">
+      <p class="label">Find me</p>
+      <h2>SprintFIT on Google</h2>
+      <p>See where I am based and the area I cover across SW London and Surrey.</p>
+    </div>
+    <!-- If the pin does not show your listing, open the profile on Google Maps, choose Share, then Embed a map, and paste that iframe's src below. -->
+    <iframe class="map" title="SprintFIT on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Sprint%20Fit%20Coaching&amp;ll=51.4739431,-0.2330211&amp;z=16&amp;output=embed"></iframe>
+    <div class="cta-row">
+      <a class="btn ghost" href="https://www.google.com/maps/place/Sprint+Fit+Coaching/@51.4739431,-0.235596,17z/data=!3m1!4b1!4m6!3m5!1s0x48760fd14aafb9fb:0x2c11ba5c19b66aa3!8m2!3d51.4739431!4d-0.2330211!16s%2Fg%2F11zx0yv3bf" target="_blank" rel="noopener">Open on Google Maps</a>
+    </div>
+  </section>
+</main>
+
+<div class="wrap">
+  <footer>
+    <span><strong style="color:var(--ink)">SprintFIT</strong> &middot; Strength &amp; speed coaching</span>
+    <span>Questions? Use the enquiry form above.</span>
+  </footer>
+</div>
+
+<dialog class="modal" id="modal" aria-label="Form">
+  <div class="modal-bar">
+    <a id="modal-out" href="#" target="_blank" rel="noopener">Open in a new tab</a>
+    <button class="btn ghost" id="modal-close" type="button">Close</button>
+  </div>
+  <iframe id="modal-frame" title="Form" src="about:blank"></iframe>
+</dialog>
+
+<script>
+/* Edit these links in one place. thisIsMe is the Tally form that receives the visitor's chosen interest. */
+var LINKS = {
+  trial: "https://cal.com/harry-north-rtqldh/sprintfit-trial-session",
+  interest: "https://cal.com/harry-north-rtqldh/expression-of-interest",
+  inquiry: "https://tally.so/r/kdo5Pj",
+  parq: "https://tally.so/r/b5JMBZ",
+  discovery: "https://tally.so/r/yPa6vB",
+  consent: "https://tally.so/r/pb2NjB",
+  thisIsMe: "https://tally.so/r/44eegY"
+};
+function external(a, url) {
+  a.setAttribute("href", url);
+  a.setAttribute("target", "_blank");
+  a.setAttribute("rel", "noopener");
+}
+document.querySelectorAll("[data-link]").forEach(function (a) {
+  var url = LINKS[a.getAttribute("data-link")];
+  if (url) external(a, url);
+});
+
+var dlg = document.getElementById("modal");
+var frame = document.getElementById("modal-frame");
+var out = document.getElementById("modal-out");
+function openModal(embedUrl, plainUrl) {
+  if (!dlg || typeof dlg.showModal !== "function") { window.open(plainUrl, "_blank", "noopener"); return; }
+  frame.src = embedUrl;
+  out.href = plainUrl;
+  dlg.showModal();
+}
+function closeModal() { if (dlg.open) dlg.close(); frame.src = "about:blank"; }
+document.getElementById("modal-close").addEventListener("click", closeModal);
+dlg.addEventListener("click", function (e) { if (e.target === dlg) closeModal(); });
+dlg.addEventListener("close", function () { frame.src = "about:blank"; });
+
+document.querySelectorAll("[data-interest]").forEach(function (a) {
+  var plain = LINKS.thisIsMe + "?interest=" + encodeURIComponent(a.getAttribute("data-interest"));
+  external(a, plain);
+  a.addEventListener("click", function (e) {
+    e.preventDefault();
+    openModal(plain + "&transparentBackground=1", plain);
+  });
+});
+document.querySelectorAll('[data-modal="cal-interest"]').forEach(function (b) {
+  if (b.tagName === "A") external(b, LINKS.interest);
+  b.addEventListener("click", function (e) {
+    e.preventDefault();
+    openModal(LINKS.interest + "?embed=true&layout=month_view", LINKS.interest);
+  });
+});
+
+function openLane(id) {
+  var el = id ? document.getElementById(id) : null;
+  if (el && el.tagName === "DETAILS") el.open = true;
+}
+document.querySelectorAll(".jump a").forEach(function (a) {
+  a.addEventListener("click", function () { openLane(a.getAttribute("href").slice(1)); });
+});
+window.addEventListener("hashchange", function () { openLane(location.hash.slice(1)); });
+openLane(location.hash.slice(1));
+</script>
+</body>
+</html>
